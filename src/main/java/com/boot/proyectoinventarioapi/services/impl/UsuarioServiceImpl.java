@@ -10,12 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.boot.proyectoinventarioapi.entities.Usuario;
 import com.boot.proyectoinventarioapi.exceptions.InternalServerErrorException;
 import com.boot.proyectoinventarioapi.exceptions.NotFountException;
 import com.boot.proyectoinventarioapi.exceptions.ProyectoInventarioException;
 import com.boot.proyectoinventarioapi.jsons.CreateUsuarioRest;
+import com.boot.proyectoinventarioapi.jsons.LoginCambioRest;
+import com.boot.proyectoinventarioapi.jsons.LoginRest;
 import com.boot.proyectoinventarioapi.jsons.UsuarioRest;
 import com.boot.proyectoinventarioapi.repositories.UsuarioRepository;
 import com.boot.proyectoinventarioapi.services.UsuarioService;
@@ -83,5 +84,70 @@ public class UsuarioServiceImpl implements UsuarioService {
 		}
 		return locator;
 	}
+
+
+
+	
+	public String modificarUsuario(CreateUsuarioRest createUsuarioRest) throws ProyectoInventarioException {
+		final UsuarioRest objUsuario = getLogin(createUsuarioRest.getUsuario(), createUsuarioRest.getPwd());
+		
+
+		String locator = createUsuarioRest.getUsuario();
+
+		final Usuario usuario = new Usuario();
+		usuario.setDireccion(createUsuarioRest.getDireccion());
+		usuario.setDocumento(createUsuarioRest.getDocumento());
+		usuario.setId(objUsuario.getId());
+		usuario.setIdrol(createUsuarioRest.getIdrol());
+		usuario.setIdtipdoc(createUsuarioRest.getIdtipdoc());
+		usuario.setPwd(objUsuario.getPwd());
+		usuario.setUsuario(objUsuario.getUsuario());
+		
+		
+		
+		
+		
+		try {
+			usuarioRepository.save(usuario);
+		} catch (final Exception e) {
+			LOGGER.error("INTERNAL_SERVER_ERROR", e);
+			throw new InternalServerErrorException("INTERNAL_SERVER_ERROR", "INTERNAL_SERVER_ERROR");
+		}
+		return locator;
+	}
+
+
+
+
+
+	@Override
+	public String cambioPwd(LoginCambioRest loginCambioRest) throws ProyectoInventarioException {
+		final UsuarioRest usuarioLogin = getLogin(loginCambioRest.getUsuario(), loginCambioRest.getPwd());
+		
+
+		String locator = "El usuario "+loginCambioRest.getUsuario()+"cambio correctamente su contraseña";
+
+		final Usuario objUsuario = new Usuario();
+		objUsuario.setDireccion(usuarioLogin.getDireccion());
+		objUsuario.setDocumento(usuarioLogin.getDocumento());
+		objUsuario.setId(usuarioLogin.getId());
+		objUsuario.setIdrol(usuarioLogin.getIdrol());
+		objUsuario.setIdtipdoc(usuarioLogin.getIdtipdoc());
+		objUsuario.setPwd(loginCambioRest.getPwdcambio());
+		objUsuario.setUsuario(usuarioLogin.getUsuario());
+		
+		
+		
+		
+		
+		try {
+			usuarioRepository.save(objUsuario);
+		} catch (final Exception e) {
+			LOGGER.error("INTERNAL_SERVER_ERROR", e);
+			throw new InternalServerErrorException("INTERNAL_SERVER_ERROR", "INTERNAL_SERVER_ERROR");
+		}
+		return locator;
+	}
+
 	
 	}

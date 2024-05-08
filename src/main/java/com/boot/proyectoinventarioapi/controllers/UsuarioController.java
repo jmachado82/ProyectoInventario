@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 
 import com.boot.proyectoinventarioapi.exceptions.ProyectoInventarioException;
 import com.boot.proyectoinventarioapi.jsons.CreateUsuarioRest;
+import com.boot.proyectoinventarioapi.jsons.LoginCambioRest;
+import com.boot.proyectoinventarioapi.jsons.LoginRest;
 import com.boot.proyectoinventarioapi.jsons.UsuarioRest;
 import com.boot.proyectoinventarioapi.responses.ProyectoInventarioResponse;
 import com.boot.proyectoinventarioapi.services.UsuarioService;
@@ -44,13 +47,20 @@ public class UsuarioController {
 	
 	
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "usuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "creacion_usuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProyectoInventarioResponse<String> crearUsuario(@RequestBody @Valid CreateUsuarioRest createUsuarioRest)
 			throws ProyectoInventarioException {
 		return new ProyectoInventarioResponse<>("Succes", String.valueOf(HttpStatus.OK), "OK",
 				usuarioService.crearUsuario(createUsuarioRest));
 	}
 	
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "modificacion_usuario", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ProyectoInventarioResponse<String> modificarUsuario(@RequestBody @Valid CreateUsuarioRest createUsuarioRest)
+			throws ProyectoInventarioException {
+		return new ProyectoInventarioResponse<>("Succes", String.valueOf(HttpStatus.OK), "OK",
+				usuarioService.modificarUsuario(createUsuarioRest));
+	}
 	
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/{usuario}/{pwd}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,7 +69,16 @@ public class UsuarioController {
 				usuarioService.getLogin(usuario,pwd));
 	}
 	
-
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "modificacion_pwd", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	
+public ProyectoInventarioResponse<String> modificarPwd(@RequestBody @Valid LoginCambioRest loginCambioRest)
+			throws ProyectoInventarioException {
+		return new ProyectoInventarioResponse<>("Succes", String.valueOf(HttpStatus.OK), "OK",
+				usuarioService.cambioPwd(loginCambioRest));
+	}
+	
+	
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "Usuarios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProyectoInventarioResponse<List<UsuarioRest>> getUsuarios() throws ProyectoInventarioException {
